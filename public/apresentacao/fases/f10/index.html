@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Jogo GPU — FPS Retrô (WebGPU)</title>
+    <script type="module" crossorigin src="./assets/index-Bp-wnlZg.js"></script>
+    <link rel="stylesheet" crossorigin href="./assets/index-BkyVUHAM.css">
+  </head>
+  <body>
+    <!-- Canvas onde a GPU desenha. Todo o render acontece aqui. -->
+    <canvas id="gpu-canvas"></canvas>
+
+    <!-- Flash vermelho ao levar dano. -->
+    <div id="damage-flash"></div>
+
+    <!-- Mira central (visível durante o jogo). -->
+    <div id="crosshair" class="hidden"></div>
+
+    <!-- HUD provisório (o HUD completo é a FASE 12). -->
+    <div id="hud" class="hidden">
+      <div class="hud-item"><span class="hud-label">HP</span><span id="hud-hp">100</span></div>
+      <div class="hud-item"><span class="hud-label">ARMA</span><span id="hud-weapon">PISTOLA</span></div>
+      <div class="hud-item"><span class="hud-label">MUNIÇÃO</span><span id="hud-ammo">12 / 48</span></div>
+    </div>
+
+    <!-- Tela de Game Over. -->
+    <div id="gameover" class="hidden">
+      <h1>VOCÊ MORREU</h1>
+      <p>Clique para tentar novamente</p>
+    </div>
+
+    <!-- Dica de controles (some ao travar o mouse). -->
+    <div id="hint">
+      CLIQUE PARA JOGAR<br />
+      <span>WASD mover · mouse olhar · clique atirar · 1/2/3 trocar arma · R recarregar · ESC sair</span>
+    </div>
+
+    <!-- Mensagem exibida caso o navegador não suporte WebGPU. -->
+    <div id="fatal" class="hidden"></div>
+
+    <!-- Ponto de entrada da aplicação (módulo ES). -->
+  </body>
+</html>

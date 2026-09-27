@@ -36,11 +36,13 @@ import { Automap } from "../ui/Automap";
 export type GameMode = "menu" | "playing" | "paused" | "dead" | "victory";
 export type Difficulty = "easy" | "normal" | "hard";
 
-const DIFF = {
+// Multiplicadores por dificuldade (vida e dano dos inimigos).
+export const DIFFICULTY_MULT: Record<Difficulty, { hp: number; dmg: number }> = {
   easy: { hp: 0.8, dmg: 0.55 },
   normal: { hp: 1.0, dmg: 1.0 },
   hard: { hp: 1.25, dmg: 1.45 },
 };
+const DIFF = DIFFICULTY_MULT;
 
 interface Checkpoint {
   x: number;

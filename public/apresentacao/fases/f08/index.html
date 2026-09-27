@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Jogo GPU — FPS Retrô (WebGPU)</title>
+    <script type="module" crossorigin src="./assets/index-D_E4hywN.js"></script>
+    <link rel="stylesheet" crossorigin href="./assets/index-Cr7rcG8S.css">
+  </head>
+  <body>
+    <!-- Canvas onde a GPU desenha. Todo o render acontece aqui. -->
+    <canvas id="gpu-canvas"></canvas>
+
+    <!-- Mira central (visível durante o jogo). -->
+    <div id="crosshair" class="hidden"></div>
+
+    <!-- Dica de controles (some ao travar o mouse). -->
+    <div id="hint">
+      CLIQUE PARA JOGAR<br />
+      <span>WASD para mover · mouse para olhar · clique para atirar · ESC para sair</span>
+    </div>
+
+    <!-- Mensagem exibida caso o navegador não suporte WebGPU. -->
+    <div id="fatal" class="hidden"></div>
+
+    <!-- Ponto de entrada da aplicação (módulo ES). -->
+  </body>
+</html>

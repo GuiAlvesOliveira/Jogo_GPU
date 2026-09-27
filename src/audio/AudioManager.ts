@@ -56,6 +56,19 @@ export class AudioManager {
     if (ctx.state === "suspended") void ctx.resume();
   }
 
+  // Analisador ligado à saída principal (usado para desenhar onda/espectro).
+  private analyserNode: AnalyserNode | null = null;
+  analyser(): AnalyserNode {
+    const ctx = this.ensure();
+    if (!this.analyserNode) {
+      this.analyserNode = ctx.createAnalyser();
+      this.analyserNode.fftSize = 2048;
+      this.analyserNode.smoothingTimeConstant = 0.6;
+      this.master.connect(this.analyserNode);
+    }
+    return this.analyserNode;
+  }
+
   setVolume(v: number): void {
     this.volume = v;
     if (this.ctx) this.master.gain.setTargetAtTime(v, this.ctx.currentTime, 0.05);

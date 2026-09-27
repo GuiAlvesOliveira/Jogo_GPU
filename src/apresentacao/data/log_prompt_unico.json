@@ -1,0 +1,262 @@
+[
+{
+"ts": "2026-09-26T15:21:38.044Z",
+"text": "Estou analisando os assets descompactados (modelos, sprites, texturas) para ver o que dá para carregar sem engine. Já extraí tudo; agora vou inspecionar formatos e conteúdo."
+},
+{
+"ts": "2026-09-26T15:23:27.377Z",
+"text": "Analisando o conteúdo dos modelos (Darsh é um morto-vivo animado em GLB, pronto para uso). Checando agora o que tem dentro do arquivo de armas."
+},
+{
+"ts": "2026-09-26T15:28:44.527Z",
+"text": "Vou baixar o Blender portátil em segundo plano e, enquanto isso, planejar o jogo."
+},
+{
+"ts": "2026-09-26T15:29:36.522Z",
+"text": "Blender funcionando. Agora vou inspecionar cada .blend por dentro (objetos, esqueletos, animações, texturas embutidas)."
+},
+{
+"ts": "2026-09-26T15:31:30.457Z",
+"text": "Checando a instalação do Blender (um módulo do exportador glTF parece faltar — provavelmente limite de caminho longo do Windows na extração)."
+},
+{
+"ts": "2026-09-26T15:33:06.908Z",
+"text": "Armas renderizadas: M4, SCAR, Mossberg, USP, M9 e faca estão boas e texturizadas. Agora prévias dos inimigos."
+},
+{
+"ts": "2026-09-26T15:34:22.930Z",
+"text": "Ajustando o script de prévia (o angler usa materiais ligados ao objeto) e renderizando os demais inimigos."
+},
+{
+"ts": "2026-09-26T15:39:05.451Z",
+"text": "Teste automatizado funcionando: Chrome headless com WebGPU na sua RTX 3060. Com isso consigo tirar screenshots do jogo e validar sozinho."
+},
+{
+"ts": "2026-09-26T15:41:30.196Z",
+"text": "Harness validado (screenshot do jogo atual funcionou). Agora vou investigar os esqueletos para criar as animações que faltam (andar, atacar, morrer)."
+},
+{
+"ts": "2026-09-26T15:43:20.783Z",
+"text": "Esqueletos mapeados. Todos olham para -Y no Blender, exceto o Darsh. Para as armas, vou checar a orientação (lado do cano) com uma vista lateral antes de exportar."
+},
+{
+"ts": "2026-09-26T15:46:17.896Z",
+"text": "Armas exportadas (100–190 KB cada). Corrigindo um detalhe de UV no M4 (dois mapas UV após a junção) e seguindo para AK-47 e kit médico."
+},
+{
+"ts": "2026-09-26T15:47:48.824Z",
+"text": "Exportando os modelos: o AK-47 ainda está pesado (vértices duplicados). Estou limpando as normais antes de seguir para os inimigos."
+},
+{
+"ts": "2026-09-26T15:49:31.582Z",
+"text": "O AK-47 ficou ótimo (madeira + aço, 1,3 MB). Agora os inimigos: vou ver o que a animação existente do angler faz antes de criar as que faltam."
+},
+{
+"ts": "2026-09-26T15:52:52.519Z",
+"text": "Rato exportado com todas as animações (idle, andar, correr, ataque, dano, morte). Agora o troll."
+},
+{
+"ts": "2026-09-26T15:53:23.081Z",
+"text": "O troll funciona: anda, ergue os braços e esmaga, e cai de cara no chão. Corrigindo a normalização de altura: o cálculo contava vértices soltos do modelo."
+},
+{
+"ts": "2026-09-26T15:54:39.026Z",
+"text": "Troll corrigido e normalizado (2,7 m). Agora o angler."
+},
+{
+"ts": "2026-09-26T15:55:28.562Z",
+"text": "Angler exportado (idle, andar, bote com mordida, morte). Agora a Sombra (Darsh)."
+},
+{
+"ts": "2026-09-26T15:56:59.945Z",
+"text": "O zumbi aparece deitado nas prévias, e já identifiquei a causa: ossos que um clipe não anima herdavam a pose de outro clipe. Vou completar os canais de todos os clipes com a pose de repouso."
+},
+{
+"ts": "2026-09-26T16:03:51.424Z",
+"text": "O mapa gerado tem as 5 zonas conectadas e as chaves em ordem. Corrigindo o último bloqueio (colunas num corredor estreito)."
+},
+{
+"ts": "2026-09-26T16:06:58.526Z",
+"text": "Convenção de skinning confirmada (posição = Σ peso × (global do osso × inversa de bind) × vértice), com animações LINEAR. Começando a escrever o motor: matemática."
+},
+{
+"ts": "2026-09-26T16:07:43.881Z",
+"text": "Agora os utilitários de textura (upload, mipmaps gerados na GPU, texture arrays):"
+},
+{
+"ts": "2026-09-26T16:08:07.590Z",
+"text": "Loader de GLB (leitura do JSON, buffers binários, malhas, skins e animações):"
+},
+{
+"ts": "2026-09-26T16:12:55.702Z",
+"text": "Shaders prontos. Agora a parte da CPU que envia os modelos para a GPU:"
+},
+{
+"ts": "2026-09-26T16:13:25.568Z",
+"text": "Agora o animador de esqueleto (amostragem dos clipes, crossfade entre clipes e cálculo das matrizes dos ossos):"
+},
+{
+"ts": "2026-09-26T16:14:20.394Z",
+"text": "Agora o Renderer: pipelines, MSAA 4x, dois passes (mundo e arma em primeira pessoa) e fila de desenho instanciada."
+},
+{
+"ts": "2026-09-26T16:16:00.599Z",
+"text": "Corrigindo o laço de desenho das portas (vou guardar o índice da geometria por porta na fila):"
+},
+{
+"ts": "2026-09-26T16:16:39.114Z",
+"text": "Agora os dados do mundo: zonas, camadas de textura e tipos de célula."
+},
+{
+"ts": "2026-09-26T16:17:28.932Z",
+"text": "Agora a classe `Level`: grade, colisão, raycast 3D por DDA, linha de visada e campo de caminhos (Dijkstra) para a IA."
+},
+{
+"ts": "2026-09-26T16:18:47.605Z",
+"text": "Agora o gerador de geometria do mapa (pisos, tetos, paredes, degraus, colunas, caixotes, portas), com oclusão ambiente nos cantos:"
+},
+{
+"ts": "2026-09-26T16:19:51.060Z",
+"text": "Corrigindo a ordem dos cantos das paredes do mapa (winding para o culling):"
+},
+{
+"ts": "2026-09-26T16:19:59.967Z",
+"text": "Agora a camada de jogo. Começando pela entrada (teclado, mouse, roda e pointer lock):"
+},
+{
+"ts": "2026-09-26T16:20:23.335Z",
+"text": "Agora o jogador: movimento com aceleração, corrida com fôlego, água e lava, balanço da cabeça, tremor de câmera e recuo."
+},
+{
+"ts": "2026-09-26T16:21:08.543Z",
+"text": "Agora o sistema de armas: definições, inventário, munição compartilhada por calibre, troca e recarga (a espingarda recarrega cartucho por cartucho):"
+},
+{
+"ts": "2026-09-26T16:21:54.144Z",
+"text": "Agora a arma na mão (view model): balanço, atraso ao virar o mouse, recuo com mola, recarga, troca e golpe de faca."
+},
+{
+"ts": "2026-09-26T16:23:18.201Z",
+"text": "Agora o sistema de efeitos: partículas, marcas de bala e poças de sangue, cápsulas ejetadas com física, rastros, projéteis elétricos e luzes dinâmicas."
+},
+{
+"ts": "2026-09-26T16:27:43.483Z",
+"text": "Ajustando o animador para tocar clipes ao contrário (o zumbi \"fingindo de morto\" se levanta):"
+},
+{
+"ts": "2026-09-26T16:28:29.730Z",
+"text": "Agora a interface: HUD (vida, fôlego, munição, chaves, barra do chefe, indicador de direção do dano, mira dinâmica) e o mapa automático (Tab)."
+},
+{
+"ts": "2026-09-26T16:29:07.651Z",
+"text": "Agora o carregador de assets (modelos GLB, texture arrays do mapa e atlas de efeitos, com progresso):"
+},
+{
+"ts": "2026-09-26T16:29:46.363Z",
+"text": "Agora o orquestrador do jogo: estados, portas, gatilhos de susto, checkpoints, tiros, chefe, vitória e montagem do frame."
+},
+{
+"ts": "2026-09-26T16:31:36.434Z",
+"text": "Agora o HTML das telas (menu com dificuldade, carregamento, pausa com sensibilidade e volume, morte, vitória com estatísticas) e o CSS:"
+},
+{
+"ts": "2026-09-26T16:32:39.364Z",
+"text": "Agora o `main.ts` (boot, carregamento, menus, pointer lock, loop e um modo de depuração para os meus testes automatizados):"
+},
+{
+"ts": "2026-09-26T16:33:02.845Z",
+"text": "Removendo os arquivos antigos que o novo motor substitui (continuam no histórico do git) e compilando:"
+},
+{
+"ts": "2026-09-26T16:33:22.827Z",
+"text": "Os erros são do TypeScript 5.9 (arrays tipados genéricos `ArrayBufferLike` × `ArrayBuffer`). Vou ver a lista completa:"
+},
+{
+"ts": "2026-09-26T16:34:07.105Z",
+"text": "O projeto compila sem erros. Hora do primeiro teste real no Chrome headless:"
+},
+{
+"ts": "2026-09-26T16:34:59.526Z",
+"text": "Corrigindo a luz da arma (lanterna com intensidade reduzida no passe da arma) e a textura da porta (tábuas verticais em vez do recorte com grama):"
+},
+{
+"ts": "2026-09-26T16:35:41.213Z",
+"text": "240 FPS em todas as zonas. Vendo as imagens:"
+},
+{
+"ts": "2026-09-26T16:37:06.844Z",
+"text": "O combate funciona de ponta a ponta: acerto com sangue, o zumbi persegue e ataca, troca para a M4, clarão do tiro e o zumbi morre. Agora vou investigar um retângulo preto que apareceu no esgoto:"
+},
+{
+"ts": "2026-09-26T16:37:45.306Z",
+"text": "O retângulo preto provavelmente é um rato visto de longe, e a sombra na lava parece estar de braços abertos (pose de repouso?). Vou olhar os dois de perto:"
+},
+{
+"ts": "2026-09-26T16:38:30.014Z",
+"text": "O rato (com cauda e textura), a sombra, o abissal com a isca acesa e o troll de olhos brilhando estão corretos. O retângulo preto continua no fim do túnel, então vou chegar mais perto dele:"
+},
+{
+"ts": "2026-09-26T16:40:03.176Z",
+"text": "Correções aplicadas. Nova rodada de screenshots para conferir o fim do túnel, os itens no chão, as portas e as chamas:"
+},
+{
+"ts": "2026-09-26T16:43:20.335Z",
+"text": "Armas na mão: AK-47, SCAR e USP estão boas. Ajustes: a faca está de perfil (quase invisível), e a M4 e a espingarda estão perto demais. Também tiro o \"/\" solto no HUD da faca."
+},
+{
+"ts": "2026-09-26T16:44:05.384Z",
+"text": "A faca agora aparece bem, inclusive no golpe. Mas a M4 e a USP têm partes brancas que não existiam no Blender. Vou extrair as texturas dos GLB para investigar:"
+},
+{
+"ts": "2026-09-26T16:45:11.502Z",
+"text": "O pente da M4 estava 28 cm acima do encaixe. Aplicando o deslocamento no script de exportação e reexportando:"
+},
+{
+"ts": "2026-09-26T16:45:38.834Z",
+"text": "Pente da M4 no lugar. Como o centro da arma mudou, vou recalcular com precisão a ponta do cano de todas as armas (onde nasce o clarão), direto dos vértices no Blender:"
+},
+{
+"ts": "2026-09-26T16:46:08.234Z",
+"text": "Agora testo o comportamento de cada tipo de inimigo ao longo do tempo: o abissal acordando da isca, a sombra lançando raios, o troll esmagando e os ratos."
+},
+{
+"ts": "2026-09-26T16:47:45.167Z",
+"text": "Agora a tela de menu (sem autostart), o mapa automático (Tab) e o susto das luzes apagando nas catacumbas:"
+},
+{
+"ts": "2026-09-26T16:48:20.780Z",
+"text": "Menu, mapa automático e o apagão das catacumbas funcionam. O chão no mapa ficou escuro demais, então vou clarear as cores:"
+},
+{
+"ts": "2026-09-26T16:51:05.025Z",
+"text": "O portão agora tem a orientação certa. As passagens secretas são blocos inteiros, então a orientação não importa para elas. Conferindo a imagem:"
+},
+{
+"ts": "2026-09-26T16:51:17.864Z",
+"text": "O portão de saída ficou correto. Agora vou documentar o pipeline de assets no repositório (para regerar tudo depois):"
+},
+{
+"ts": "2026-09-26T16:51:34.762Z",
+"text": "Agora uma revisão cuidadosa do código principal antes de concluir:"
+},
+{
+"ts": "2026-09-26T16:51:51.141Z",
+"text": "Revisão feita. Um último ajuste: o zumbi \"fingindo de morto\" usava a hitbox em pé (tiros acima do corpo deitado acertavam). Passo a usar uma caixa baixa enquanto ele está no chão:"
+},
+{
+"ts": "2026-09-26T16:52:03.894Z",
+"text": "Build ok. Rodando uma última regressão rápida (início, combate, chaves, chefe e vitória) para garantir que nada quebrou com os ajustes:"
+},
+{
+"ts": "2026-09-26T16:52:57.209Z",
+"text": "É o processo do Vite que eu mesmo iniciei para os testes (sobrou o processo filho). Encerrando para liberar a porta:"
+},
+{
+"ts": "2026-09-26T16:53:08.773Z",
+"text": "Porta liberada. Agora atualizo a memória do projeto (arquitetura nova, pipeline de assets, forma de testar e a mudança no modo de trabalho que você pediu):"
+},
+{
+"ts": "2026-09-26T16:54:22.491Z",
+"text": "O Setor Zero está completo e jogável do menu até a tela de vitória. Rode `npm run dev` e abra **http://localhost:5173**, não o Live Server nem o Apache.\n\nTestei sozinho num Chrome sem janela, com WebGPU na sua RTX 3060. Os testes cobriram o menu, os combates, as três chaves, a morte com volta ao checkpoint, o chefe e a vitória. Deu 240 FPS mesmo com 63 inimigos perseguindo ao mesmo tempo, sem erros no console. Não consegui ouvir o som nesse teste: só confirmei que ele roda sem erros, então vale jogar com fone e me dizer se algo soa estranho.\n\n**O mapa** é um só, grande (88×70 células, ~220×175 m), com 5 zonas em sequência: acampamento → esgotos → catacumbas → forja de lava → minas → arena…"
+}
+]

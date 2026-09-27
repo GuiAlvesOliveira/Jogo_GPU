@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SETOR ZERO — FPS em WebGPU</title>
+    <link rel="stylesheet" href="/src/style.css" />
+  </head>
+  <body>
+    <!-- Canvas onde a GPU desenha. Todo o render acontece aqui. -->
+    <canvas id="gpu-canvas"></canvas>
+
+    <!-- Camadas de efeito por cima da imagem -->
+    <div id="vignette"></div>
+    <div id="damage-flash"></div>
+    <div id="lowhp"></div>
+    <div id="dmg-dir"><div class="arc"></div></div>
+
+    <!-- Mira dinâmica (abre com a dispersão) -->
+    <div id="crosshair" class="hidden"><i class="t"></i><i class="b"></i><i class="l"></i><i class="r"></i><i class="dot"></i></div>
+    <div id="hitmarker"></div>
+
+    <!-- HUD -->
+    <div id="hud" class="hidden">
+      <div id="hud-health">
+        <div class="row"><span class="icon">✚</span><span id="hp-val">100</span></div>
+        <div class="bar"><div id="hp-bar"></div></div>
+        <div id="stamina"><div id="st-bar"></div></div>
+      </div>
+      <div id="hud-ammo">
+        <div id="w-name">USP .45</div>
+        <div class="row"><span id="mag">12</span><span id="ammo-sep" class="sep">/</span><span id="reserve">36</span></div>
+        <div id="ammo-type">.45 ACP</div>
+      </div>
+      <div id="hud-keys">
+        <span id="key-red" class="key red"></span>
+        <span id="key-blue" class="key blue"></span>
+        <span id="key-yellow" class="key yellow"></span>
+        <span id="flash-ind" title="Lanterna (F)">◐</span>
+      </div>
+      <div id="hud-objective"></div>
+      <div id="hud-zone"></div>
+      <div id="hud-msg"></div>
+      <div id="hud-prompt"></div>
+      <div id="hud-slots"></div>
+      <div id="boss-bar" class="hidden">
+        <div id="boss-name">REI TROLL</div>
+        <div class="bar"><div id="boss-fill"></div></div>
+      </div>
+    </div>
+
+    <canvas id="automap" class="hidden"></canvas>
+
+    <!-- Menu principal (também tela de carregamento) -->
+    <div id="menu" class="screen">
+      <div class="title">
+        <h1>SETOR ZERO</h1>
+        <p class="sub">um FPS de horror renderizado direto na GPU (WebGPU + WGSL)</p>
+      </div>
+      <div id="loading">
+        <div class="bar"><div id="load-bar"></div></div>
+        <p id="load-text">Carregando modelos e texturas…</p>
+      </div>
+      <div id="menu-buttons" class="hidden">
+        <p class="label">ESCOLHA A DIFICULDADE</p>
+        <button data-diff="easy">SOBREVIVENTE <small>fácil</small></button>
+        <button data-diff="normal" class="primary">SOLDADO <small>normal</small></button>
+        <button data-diff="hard">PESADELO <small>difícil</small></button>
+      </div>
+      <div class="controls">
+        <b>WASD</b> mover · <b>SHIFT</b> correr · <b>MOUSE</b> mirar · <b>CLIQUE</b> atirar · <b>BOTÃO DIREITO</b> mirar fino<br />
+        <b>1–6 / RODA</b> trocar arma · <b>R</b> recarregar · <b>E</b> abrir portas / passagens · <b>F</b> lanterna · <b>TAB</b> mapa · <b>ESC</b> pausa
+      </div>
+      <p class="hint">Use fone de ouvido. Procure as chaves VERMELHA, AZUL e AMARELA — e desconfie de toda luz no escuro.</p>
+      <p class="credits">
+        Modelos/texturas: Kenney (CC0) · pacote "FPS Weapons" (CC BY-SA 3.0) · troll, abissal, rato, "Darsh", AK-47, kit médico, tileset e texturas
+        fornecidos na pasta assets. Som 100% sintetizado.
+      </p>
+    </div>
+
+    <!-- Pausa -->
+    <div id="pause" class="screen hidden">
+      <h2>PAUSADO</h2>
+      <button id="btn-resume" class="primary">CONTINUAR</button>
+      <label>Sensibilidade do mouse <input id="sens" type="range" min="0.6" max="3" step="0.1" value="1" /></label>
+      <label>Volume <input id="vol" type="range" min="0" max="1" step="0.05" value="0.8" /></label>
+      <button id="btn-restart">RECOMEÇAR DO INÍCIO</button>
+    </div>
+
+    <!-- Morte -->
+    <div id="dead" class="screen hidden">
+      <h2>VOCÊ MORREU</h2>
+      <button id="btn-checkpoint" class="primary">VOLTAR AO ÚLTIMO PONTO SEGURO</button>
+      <button id="btn-restart2">RECOMEÇAR DO INÍCIO</button>
+    </div>
+
+    <!-- Vitória -->
+    <div id="victory" class="screen hidden">
+      <h2>VOCÊ ESCAPOU DO SETOR ZERO</h2>
+      <p class="sub">O elevador sobe em silêncio. Lá embaixo, a forja se apaga.</p>
+      <table id="stats"></table>
+      <button id="btn-menu" class="primary">JOGAR NOVAMENTE</button>
+    </div>
+
+    <div id="fatal" class="hidden"></div>
+
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

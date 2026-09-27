@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Jogo GPU — FPS Retrô (WebGPU)</title>
+    <script type="module" crossorigin src="./assets/index-DJuk9Zit.js"></script>
+    <link rel="stylesheet" crossorigin href="./assets/index-CB_CEWA6.css">
+  </head>
+  <body>
+    <!-- Canvas onde a GPU desenha. Todo o render acontece aqui. -->
+    <canvas id="gpu-canvas"></canvas>
+
+    <!-- Flash vermelho ao levar dano. -->
+    <div id="damage-flash"></div>
+
+    <!-- Mira central (visível durante o jogo). -->
+    <div id="crosshair" class="hidden"></div>
+
+    <!-- HUD completo (FASE 12). -->
+    <div id="hud" class="hidden">
+      <div class="hud-corner hud-tl">
+        <div class="hud-item"><span class="hud-label">SCORE</span><span id="hud-score">0</span></div>
+      </div>
+      <div class="hud-corner hud-tr">
+        <div class="hud-item"><span class="hud-label">FASE</span><span id="hud-level">1</span></div>
+        <div class="hud-item"><span class="hud-label">INIMIGOS</span><span id="hud-enemies">0</span></div>
+      </div>
+      <div class="hud-corner hud-bl">
+        <div class="hud-item"><span class="hud-label">HP</span><span id="hud-hp">100</span></div>
+        <div class="hud-item"><span class="hud-label">ARMOR</span><span id="hud-armor">0</span></div>
+      </div>
+      <div class="hud-corner hud-br">
+        <div class="hud-item"><span class="hud-label">ARMA</span><span id="hud-weapon">PISTOLA</span></div>
+        <div class="hud-item"><span class="hud-label">MUNIÇÃO</span><span id="hud-ammo">12 / 48</span></div>
+      </div>
+    </div>
+
+    <!-- Tela de Game Over. -->
+    <div id="gameover" class="hidden">
+      <h1>VOCÊ MORREU</h1>
+      <p>Clique para tentar novamente</p>
+    </div>
+
+    <!-- Tela de início (MENU). -->
+    <div id="start">
+      <h1>SETOR ZERO</h1>
+      <p class="start-cta">CLIQUE PARA INICIAR</p>
+      <p class="start-controls">
+        WASD mover · mouse olhar · clique atirar<br />
+        1 / 2 / 3 trocar arma · R recarregar · ESC pausar
+      </p>
+    </div>
+
+    <!-- Aviso de pausa (mouse solto durante o jogo). -->
+    <div id="hint" class="hidden">
+      PAUSADO<br />
+      <span>Clique para continuar</span>
+    </div>
+
+    <!-- Mensagem exibida caso o navegador não suporte WebGPU. -->
+    <div id="fatal" class="hidden"></div>
+
+    <!-- Ponto de entrada da aplicação (módulo ES). -->
+  </body>
+</html>

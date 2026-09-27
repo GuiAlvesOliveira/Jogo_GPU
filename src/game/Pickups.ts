@@ -41,6 +41,34 @@ export const KEY_COLOR: Record<KeyColor, [number, number, number]> = {
 };
 const KEY_NAME: Record<KeyColor, string> = { red: "VERMELHA", blue: "AZUL", yellow: "AMARELA" };
 
+// Tabela de itens por caractere do mapa (também lida pela apresentação
+// para calcular o balanceamento).
+export interface PickupDef {
+  kind: PickupKind;
+  amount: number;
+  ammo?: AmmoType;
+  weapon?: string;
+  key?: KeyColor;
+  model: string;
+  scale: number;
+  tilt?: number;
+}
+export const PICKUP_TABLE: Record<string, PickupDef> = {
+  h: { kind: "health", amount: 25, model: "i_medkit", scale: 0.75, tilt: -1.2 },
+  m: { kind: "health", amount: 60, model: "i_medkit", scale: 1.15, tilt: -1.2 },
+  "1": { kind: "ammo", amount: 24, ammo: "p45", model: "i_mag_pistol", scale: 2.2 },
+  "2": { kind: "ammo", amount: 8, ammo: "shell", model: "i_shells", scale: 1.4 },
+  "3": { kind: "ammo", amount: 30, ammo: "r556", model: "i_mag_rifle", scale: 1.7 },
+  "4": { kind: "ammo", amount: 20, ammo: "r762", model: "i_mag_heavy", scale: 1.8 },
+  S: { kind: "weapon", amount: 0, weapon: "mossberg", model: "w_mossberg", scale: 1.5 },
+  W: { kind: "weapon", amount: 0, weapon: "m4", model: "w_m4", scale: 1.5 },
+  Q: { kind: "weapon", amount: 0, weapon: "ak47", model: "w_ak47", scale: 1.5 },
+  V: { kind: "weapon", amount: 0, weapon: "scar", model: "w_scar", scale: 1.5 },
+  "!": { kind: "key", amount: 0, key: "red", model: "key", scale: 0.26 },
+  $: { kind: "key", amount: 0, key: "blue", model: "key", scale: 0.26 },
+  "&": { kind: "key", amount: 0, key: "yellow", model: "key", scale: 0.26 },
+};
+
 export class Pickups {
   list: Pickup[] = [];
   private readonly m = new Float32Array(16);
@@ -53,26 +81,14 @@ export class Pickups {
 
   // Cria um item a partir do caractere do mapa (ou de um drop).
   add(ch: string, x: number, z: number, level: Level): void {
-    const y = level.floorAt(x, z);
-    const base = { x, y, z, active: true, phase: Math.random() * 6.28, tilt: 0 };
-    const M = this.models;
-    let p: Pickup | null = null;
-    switch (ch) {
-      case "h": p = { ...base, kind: "health", amount: 25, model: M.i_medkit, scale: 0.75, tilt: -1.2 }; break;
-      case "m": p = { ...base, kind: "health", amount: 60, model: M.i_medkit, scale: 1.15, tilt: -1.2 }; break;
-      case "1": p = { ...base, kind: "ammo", amount: 24, ammo: "p45", model: M.i_mag_pistol, scale: 2.2 }; break;
-      case "2": p = { ...base, kind: "ammo", amount: 8, ammo: "shell", model: M.i_shells, scale: 1.4 }; break;
-      case "3": p = { ...base, kind: "ammo", amount: 30, ammo: "r556", model: M.i_mag_rifle, scale: 1.7 }; break;
-      case "4": p = { ...base, kind: "ammo", amount: 20, ammo: "r762", model: M.i_mag_heavy, scale: 1.8 }; break;
-      case "S": p = { ...base, kind: "weapon", amount: 0, weapon: "mossberg", model: M.w_mossberg, scale: 1.5 }; break;
-      case "W": p = { ...base, kind: "weapon", amount: 0, weapon: "m4", model: M.w_m4, scale: 1.5 }; break;
-      case "Q": p = { ...base, kind: "weapon", amount: 0, weapon: "ak47", model: M.w_ak47, scale: 1.5 }; break;
-      case "V": p = { ...base, kind: "weapon", amount: 0, weapon: "scar", model: M.w_scar, scale: 1.5 }; break;
-      case "!": p = { ...base, kind: "key", amount: 0, key: "red", model: this.keyModels.red, scale: 0.26 }; break;
-      case "$": p = { ...base, kind: "key", amount: 0, key: "blue", model: this.keyModels.blue, scale: 0.26 }; break;
-      case "&": p = { ...base, kind: "key", amount: 0, key: "yellow", model: this.keyModels.yellow, scale: 0.26 }; break;
-    }
-    if (p) this.list.push(p);
+    const def = PICKUP_TABLE[ch];
+    if (!def) return;
+    const model = def.key ? this.keyModels[def.key] : this.models[def.model];
+    this.list.push({
+      x, y: level.floorAt(x, z), z, active: true, phase: Math.random() * 6.28,
+      kind: def.kind, amount: def.amount, ammo: def.ammo, weapon: def.weapon, key: def.key,
+      model, scale: def.scale, tilt: def.tilt ?? 0,
+    });
   }
 
   // Coleta: devolve as chaves pegas neste frame (para os gatilhos).
